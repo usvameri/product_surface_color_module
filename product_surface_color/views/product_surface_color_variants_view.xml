@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="product_surface_color_form_view" model="ir.ui.view">
+        <field name="name">product.surface.color.form.view</field>
+        <field name="model">product.attribute</field>
+        <field name="inherit_id" ref="product.product_attribute_view_form"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='value_ids']/tree/field[@name='name']" position="before">
+                <field name="product_surface_color_variant" widget="image" options="{'size': [50,50]}"></field>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="product_template_attribute_value_view_tree_surface_color" model="ir.ui.view">
+        <field name="name">product.template.attribute.value.view.tree.surface.color</field>
+        <field name="model">product.template.attribute.value</field>
+        <field name="inherit_id" ref="product.product_template_attribute_value_view_tree"></field>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="product_surface_color_variant" widget="image" options="{'size': [50,50]}"></field>
+            </field>
+        </field>
+    </record>
+    <record id="product_template_attribute_value_view_tree_inherit_surface_color" model="ir.ui.view">
+            <field name="name">product.template.attribute.value.view.tree.inherit.surface.color</field>
+            <field name="model">product.template.attribute.value</field>
+            <field name="inherit_id" ref="product.product_template_attribute_value_view_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="product_surface_color_variant" widget="image" options="{'size': [50,50]}"/>
+                </field>
+            </field>
+    </record>
+
+    <record id="product_variants_wizard_view_inherit_for_surface_color" model="ir.ui.view">
+        <field name="name">product.variants.wizard.view.inherit.for.surface.color</field>
+        <field name="model">product.template.attribute.line</field>
+        <field name="inherit_id" ref="product.product_template_attribute_line_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='value_ids']/tree/field[@name='name']" position="before" >
+                <field name="product_surface_color_variant" widget="image" options="{'size': [50,50]}" ></field>
+            </xpath>
+        </field>
+    </record>
+
+
+        <template id="product_variants_website_view_inherit" inherit_id="sale.variants">
+             <xpath expr="//strong[@class='attribute_name']" position="after">
+                      <t t-if="ptal.attribute_id.display_type == 'surfacecolor'">
+                            <ul t-att-data-attribute_id="ptal.attribute_id.id" class="list-inline">
+                                <li t-foreach="ptal.product_template_value_ids._only_active()" t-as="ptav" class="list-inline-item">
+                                    <label t-att-title="ptav.name"  t-attf-class="css_attribute_color #{'active' if ptav in combination else ''} #{'custom_value' if ptav.is_custom else ''}">
+                                        <img  t-att-title="ptav.name"  t-attf-style="width:50px;height:50px;" t-if="ptav.product_surface_color_variant" t-attf-src="data:image/*;base64,{{ptav.product_surface_color_variant}}">
+                                            <input  type="radio"
+                                                    t-attf-style=" position: absolute;opacity:0;width:0;height:0;}"
+                                                    t-attf-class="js_variant_change  #{ptav.attribute_id.create_variant}"
+                                                    t-att-checked="ptav in combination"
+                                                    t-att-name="'ptal-%s' % ptal.id"
+                                                    t-att-value="ptav.id"
+                                                    t-att-data-value_id="ptav.id"
+                                                    t-att-data-value_name="ptav.name"
+                                                    t-att-data-attribute_name="ptav.attribute_id.name"
+                                                    t-att-data-image-color-data ="ptav.product_surface_color_variant"
+                                                    t-att-alt="ptav.name">
+                                            </input>
+                                        </img>
+                                    </label>
+                                </li>
+                            </ul>
+                    </t>
+             </xpath>
+        </template>
+
+
+
+</odoo>
